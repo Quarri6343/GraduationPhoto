@@ -21,7 +21,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static quarri6343.graduationphoto.KeyRegistry.openScreenKeybind;
+import static quarri6343.graduationphoto.KeyInputListener.openScreenKeybind;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("graduationphoto")
