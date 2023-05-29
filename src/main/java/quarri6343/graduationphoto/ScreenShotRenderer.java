@@ -65,7 +65,11 @@ public class ScreenShotRenderer extends Screen {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         ResourceLocation textureLocation = Minecraft.getInstance().getTextureManager().register("screenshot", texture);
         Minecraft.getInstance().getTextureManager().bind(textureLocation);
-        blit(matrixStack, (width - textureWidth) / 2, (height - textureHeight) / 2, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
+        GL11.glPushMatrix();
+        GL11.glTranslatef(width / 2,height / 2,0);
+        GL11.glRotatef(15f, 0f, 0f, 1f);
+        blit(matrixStack, - textureWidth / 2, - textureHeight / 2, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
+        GL11.glPopMatrix();
     }
 
     @Override
