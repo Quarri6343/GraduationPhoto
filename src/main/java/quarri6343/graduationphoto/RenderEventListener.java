@@ -10,7 +10,12 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -57,9 +62,16 @@ public class RenderEventListener {
         int imageY = (int) (mc.getWindow().getScreenHeight() * 0.2);
         int imageWidth = (int) (mc.getWindow().getScreenWidth()  * 0.4);
         int imageHeight = (int) (mc.getWindow().getScreenHeight() * 0.6);
+
+        BlockRayTraceResult rayTraceResult = mc.getCameraEntity().level.clip(
+                new RayTraceContext(
+                        mc.player.getEyePosition(1f), 
+                        event.getPlayer().getEyePosition(1f), 
+                        RayTraceContext.BlockMode.VISUAL, RayTraceContext.FluidMode.NONE, mc.player));
         
         if (screenPosition.x >= imageX && screenPosition.x <= imageX + imageWidth
-                && screenPosition.y >= imageY && screenPosition.y <= imageY + imageHeight) {
+                && screenPosition.y >= imageY && screenPosition.y <= imageY + imageHeight
+                && rayTraceResult.getType() == RayTraceResult.Type.MISS) {
             playersOnPhotoFrame.add(event.getPlayer());
         }
     }
