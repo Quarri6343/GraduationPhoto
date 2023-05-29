@@ -25,9 +25,8 @@ public class PhotoFrameRenderer {
         }
 
         //debug
-        if(RenderEventListener.playersOnPhotoFrame.size() > 0){
+        if(RenderEventListener.playersInPhoto.size() > 0){
             AbstractGui.drawCenteredString(event.getMatrixStack(), Minecraft.getInstance().font, "枠内にプレイヤーがいます", 100, 100, 0);
         }
-        RenderEventListener.playersOnPhotoFrame.clear();
     }
 }

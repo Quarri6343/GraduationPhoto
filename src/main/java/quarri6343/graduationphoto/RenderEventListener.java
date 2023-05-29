@@ -13,9 +13,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -29,7 +26,7 @@ import java.util.List;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 
 public class RenderEventListener {
-    public static List<PlayerEntity> playersOnPhotoFrame = new ArrayList<>();
+    public static List<PlayerEntity> playersInPhoto = new ArrayList<>();
 
     private Vector3 debugScreenPosition;
 
@@ -68,11 +65,12 @@ public class RenderEventListener {
                         mc.player.getEyePosition(1f), 
                         event.getPlayer().getEyePosition(1f), 
                         RayTraceContext.BlockMode.VISUAL, RayTraceContext.FluidMode.NONE, mc.player));
-        
+
+        playersInPhoto.clear();
         if (screenPosition.x >= imageX && screenPosition.x <= imageX + imageWidth
                 && screenPosition.y >= imageY && screenPosition.y <= imageY + imageHeight
                 && rayTraceResult.getType() == RayTraceResult.Type.MISS) {
-            playersOnPhotoFrame.add(event.getPlayer());
+            playersInPhoto.add(event.getPlayer());
         }
     }
 
