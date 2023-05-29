@@ -10,7 +10,6 @@ import net.minecraft.client.network.play.NetworkPlayerInfo;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.ScreenShotHelper;
@@ -21,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import static quarri6343.graduationphoto.Graduationphoto.FILM_SOUND;
 
 public class ScreenShotRenderer extends Screen {
     private DynamicTexture texture;
@@ -42,6 +43,8 @@ public class ScreenShotRenderer extends Screen {
         
         texture = new DynamicTexture(cropImage(nativeImage,
                 (int) (mc.getWindow().getWidth() * 0.3), (int) (mc.getWindow().getHeight() * 0.2), (int) (mc.getWindow().getWidth() * 0.4), (int) (mc.getWindow().getHeight() * 0.6)));
+        
+        mc.player.playSound(FILM_SOUND, 1.0f, 1.0f);
     }
     
     public void listPlayerNotOnScreenshot(){
@@ -51,9 +54,7 @@ public class ScreenShotRenderer extends Screen {
         playersC.forEach((loadedPlayer) -> {
             String loadedPlayerName = loadedPlayer.getProfile().getName();
             if(RenderEventListener.playersInPhoto.stream().noneMatch(playerEntity -> playerEntity.getName().getString().equals(loadedPlayerName))){
-                if(Minecraft.getInstance().options.getCameraType() == PointOfView.FIRST_PERSON) // 1人称なら写真に載っていない時点で遺影確定
-                    playersNotInPhoto.add(loadedPlayer.getProfile());
-                else if(!loadedPlayerName.equals(Minecraft.getInstance().player.getName().getString())) //3人称の場合撮影者は写真に載っている判定でなくても実際には載っている
+                if(!loadedPlayerName.equals(Minecraft.getInstance().player.getName().getString()))
                     playersNotInPhoto.add(loadedPlayer.getProfile());
             }
         });

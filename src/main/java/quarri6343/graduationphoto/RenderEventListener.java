@@ -77,6 +77,7 @@ public class RenderEventListener {
     @SubscribeEvent
     public void onRenderWorld(RenderWorldLastEvent event) {
         projectionMatrix = new Matrix4(event.getProjectionMatrix());
+        playersInPhoto.clear();
     }
 
     @SubscribeEvent

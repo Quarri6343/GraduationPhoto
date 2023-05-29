@@ -2,6 +2,8 @@ package quarri6343.graduationphoto;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -27,6 +29,10 @@ public class Graduationphoto {
     
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
+
+    public static final SoundEvent FILM_SOUND = new SoundEvent(
+            new ResourceLocation("graduationphoto", "film")
+    ).setRegistryName("custom_sound");
 
     public Graduationphoto() {
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
@@ -65,6 +71,13 @@ public class Graduationphoto {
         public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
             // register a new block here
             LOGGER.info("HELLO from Register Block");
+        }
+
+        @SubscribeEvent
+        public static void registerSounds(RegistryEvent.Register<SoundEvent> event) {
+            event.getRegistry().registerAll(
+                    FILM_SOUND
+            );
         }
     }
 }
