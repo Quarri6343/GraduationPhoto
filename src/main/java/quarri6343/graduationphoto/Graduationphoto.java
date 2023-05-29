@@ -18,7 +18,6 @@ import net.minecraftforge.fml.network.FMLNetworkConstants;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.glfw.GLFW;
 
 import static quarri6343.graduationphoto.KeyRegistry.openScreenKeybind;
 
@@ -55,7 +54,7 @@ public class Graduationphoto {
         MinecraftForge.EVENT_BUS.register(new KeyInputListener(Minecraft.getInstance(), openScreenKeybind));
 
         MinecraftForge.EVENT_BUS.register(new PhotoFrameRenderer());
-        MinecraftForge.EVENT_BUS.register(new RenderPlayerEventListener());
+        MinecraftForge.EVENT_BUS.register(new RenderEventListener());
     }
 
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
