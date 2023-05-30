@@ -93,8 +93,22 @@ public class ScreenShotRenderer extends Screen {
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 
-        int textureWidth = (int)(width * 0.4);
-        int textureHeight = (int)(height * 0.6);
+        float newPhotoWidth = photoWidth;
+        float newPhotoHeight = photoHeight;
+        //最大0.6 * 0.6
+        if(photoWidth < 0.6f && photoHeight < 0.6f){
+            if(photoWidth >= photoHeight){
+                newPhotoWidth = 0.6f;
+                newPhotoHeight = 0.6f / photoWidth * photoHeight;
+            }
+            else{
+                newPhotoHeight = 0.6f;
+                newPhotoWidth = 0.6f / photoHeight * photoWidth;
+            }
+        }
+
+        int textureWidth = (int)(width * newPhotoWidth);
+        int textureHeight = (int)(height * newPhotoHeight);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         ResourceLocation textureLocation = Minecraft.getInstance().getTextureManager().register("screenshot", texture);
         Minecraft.getInstance().getTextureManager().bind(textureLocation);
