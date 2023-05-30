@@ -63,10 +63,8 @@ public class Graduationphoto {
     private void doClientStuff(final FMLClientSetupEvent event) {
         // do something that can only be done on the client
         LOGGER.info("Got game settings {}", event.getMinecraftSupplier().get().options);
-
-        ClientRegistry.registerKeyBinding(openScreenKeyBind);
-        ClientRegistry.registerKeyBinding(disableFlashKeyBind);
-        MinecraftForge.EVENT_BUS.register(new KeyInputListener(Minecraft.getInstance(), openScreenKeyBind, disableFlashKeyBind));
+        
+        MinecraftForge.EVENT_BUS.register(new KeyInputListener(Minecraft.getInstance()));
 
         MinecraftForge.EVENT_BUS.register(new PhotoFrameRenderer());
         MinecraftForge.EVENT_BUS.register(new RenderEventListener());
