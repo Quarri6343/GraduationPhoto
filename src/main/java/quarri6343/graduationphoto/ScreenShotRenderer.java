@@ -29,6 +29,14 @@ import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static quarri6343.graduationphoto.Graduationphoto.*;
 
 public class ScreenShotRenderer extends Screen {
+
+    public static int flashTime = 10;
+
+    /**
+     * 0でflash開始、flashTimeでflash終了
+     */
+    public int flashScreen = 0;
+    
     private DynamicTexture texture;
     private List<GameProfile> playersNotInPhoto = new ArrayList<>();
 
@@ -50,7 +58,6 @@ public class ScreenShotRenderer extends Screen {
                 (int) (mc.getWindow().getWidth() * photoX), (int) (mc.getWindow().getHeight() * photoY), (int) (mc.getWindow().getWidth() * photoWidth), (int) (mc.getWindow().getHeight() * photoHeight)));
         
         mc.player.playSound(FILM_SOUND, 1.0f, 1.0f);
-        FlashScreenRenderer.flashScreen = 0;
     }
     
     public void listPlayerNotOnScreenshot(){
@@ -110,6 +117,38 @@ public class ScreenShotRenderer extends Screen {
         }
         
         GL11.glPopMatrix();
+        
+        renderFlash();
+    }
+    
+    public void renderFlash(){
+        if (flashScreen < flashTime) {
+            if(!Graduationphoto.doFlash){
+                flashScreen = flashTime;
+                return;
+            }
+
+            RenderSystem.enableBlend();
+            // 点を描画
+            RenderSystem.disableTexture();
+            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F - (float) flashScreen / (float) flashTime);
+
+            Tessellator t = Tessellator.getInstance();
+            BufferBuilder builder = t.getBuilder();
+            builder.begin(GL_QUADS, DefaultVertexFormats.POSITION);
+            //builder.vertex(debugScreenPosition.x(), debugScreenPosition.y(), 0).color(255, 0, 0, 255).endVertex();
+
+            builder.vertex(0, Minecraft.getInstance().getWindow().getGuiScaledHeight(), -90.0D).endVertex();
+            builder.vertex(Minecraft.getInstance().getWindow().getGuiScaledWidth(), Minecraft.getInstance().getWindow().getGuiScaledHeight(), -90.0D).endVertex();
+            builder.vertex(Minecraft.getInstance().getWindow().getGuiScaledWidth(), 0, -90.0D).endVertex();
+            builder.vertex(0, 0, -90.0D).endVertex();
+
+            t.end();
+
+            RenderSystem.enableTexture();
+            RenderSystem.disableBlend();
+            flashScreen++;
+        }
     }
 
     @Override

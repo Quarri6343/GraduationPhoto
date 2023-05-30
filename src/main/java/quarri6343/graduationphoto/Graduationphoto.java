@@ -1,6 +1,5 @@
 package quarri6343.graduationphoto;
 
-import net.java.games.input.Mouse;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
@@ -22,7 +21,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static quarri6343.graduationphoto.KeyInputListener.openScreenKeybind;
+import static quarri6343.graduationphoto.KeyInputListener.disableFlashKeyBind;
+import static quarri6343.graduationphoto.KeyInputListener.openScreenKeyBind;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("graduationphoto")
@@ -35,6 +35,8 @@ public class Graduationphoto {
     public static float photoY = 0.2f;
     public static float photoWidth = 0.4f;
     public static float photoHeight = 0.6f;
+    
+    public static boolean doFlash = true;
 
     public static final SoundEvent FILM_SOUND = new SoundEvent(
             new ResourceLocation("graduationphoto", "film")
@@ -62,13 +64,13 @@ public class Graduationphoto {
         // do something that can only be done on the client
         LOGGER.info("Got game settings {}", event.getMinecraftSupplier().get().options);
 
-        ClientRegistry.registerKeyBinding(openScreenKeybind);
-        MinecraftForge.EVENT_BUS.register(new KeyInputListener(Minecraft.getInstance(), openScreenKeybind));
+        ClientRegistry.registerKeyBinding(openScreenKeyBind);
+        ClientRegistry.registerKeyBinding(disableFlashKeyBind);
+        MinecraftForge.EVENT_BUS.register(new KeyInputListener(Minecraft.getInstance(), openScreenKeyBind, disableFlashKeyBind));
 
         MinecraftForge.EVENT_BUS.register(new PhotoFrameRenderer());
         MinecraftForge.EVENT_BUS.register(new RenderEventListener());
         MinecraftForge.EVENT_BUS.register(new MouseHandler());
-        MinecraftForge.EVENT_BUS.register(new FlashScreenRenderer());
     }
 
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD

@@ -11,6 +11,7 @@ public class MouseHandler {
     @SubscribeEvent
     public void onMouseClick(GuiScreenEvent.MouseClickedEvent.Pre event) {
         if (event.getGui() instanceof net.minecraft.client.gui.screen.ChatScreen) {
+            event.setCanceled(true);
             if(event.getButton() == 0){ //左クリックで始点を設定
                 Graduationphoto.photoX = (float) event.getMouseX() / event.getGui().width;
                 Graduationphoto.photoY = (float) event.getMouseY() / event.getGui().height;
