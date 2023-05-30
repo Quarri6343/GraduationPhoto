@@ -29,6 +29,11 @@ public class Graduationphoto {
     
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
+    
+    public static float photoX = 0.3f;
+    public static float photoY = 0.2f;
+    public static float photoWidth = 0.4f;
+    public static float photoHeight = 0.6f;
 
     public static final SoundEvent FILM_SOUND = new SoundEvent(
             new ResourceLocation("graduationphoto", "film")

@@ -16,6 +16,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 
@@ -24,15 +25,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static quarri6343.graduationphoto.Graduationphoto.*;
 
 public class RenderEventListener {
     public static List<PlayerEntity> playersInPhoto = new ArrayList<>();
 
-    private Vector3 debugScreenPosition;
+    private Vector3 debugGuiPosition;
 
     private static Matrix4 projectionMatrix;
 
     public static final IntBuffer VIEWPORT = GLAllocation.createByteBuffer(16 << 2).asIntBuffer();
+
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        playersInPhoto.clear();
+    }
 
     @SubscribeEvent
     public void onRenderPlayer(RenderPlayerEvent.Post event) {
@@ -52,13 +59,17 @@ public class RenderEventListener {
         
         Matrix4 viewModelMatrix = new Matrix4(event.getMatrixStack().last().pose());
         Vector3 screenPosition = Matrix4.gluProject(targetPos, viewModelMatrix, projectionMatrix, VIEWPORT);
-        
-        this.debugScreenPosition = screenPosition;
 
-        int imageX = (int) (mc.getWindow().getScreenWidth() * 0.3);
-        int imageY = (int) (mc.getWindow().getScreenHeight() * 0.2);
-        int imageWidth = (int) (mc.getWindow().getScreenWidth()  * 0.4);
-        int imageHeight = (int) (mc.getWindow().getScreenHeight() * 0.6);
+        // スクリーン座標をgui座標に変換
+        screenPosition.x = (float) screenPosition.x / Minecraft.getInstance().getWindow().getScreenWidth() * Minecraft.getInstance().getWindow().getGuiScaledWidth();
+        screenPosition.y = (float) (Minecraft.getInstance().getWindow().getScreenHeight() - screenPosition.y) / Minecraft.getInstance().getWindow().getScreenHeight() * Minecraft.getInstance().getWindow().getGuiScaledHeight();
+
+        this.debugGuiPosition = screenPosition;
+
+        int imageX = (int) (mc.getWindow().getGuiScaledWidth() * photoX);
+        int imageY = (int) (mc.getWindow().getGuiScaledHeight() * photoY);
+        int imageWidth = (int) (mc.getWindow().getGuiScaledWidth()  * photoWidth);
+        int imageHeight = (int) (mc.getWindow().getGuiScaledHeight() * photoHeight);
 
         BlockRayTraceResult rayTraceResult = mc.getCameraEntity().level.clip(
                 new RayTraceContext(
@@ -77,17 +88,15 @@ public class RenderEventListener {
     @SubscribeEvent
     public void onRenderWorld(RenderWorldLastEvent event) {
         projectionMatrix = new Matrix4(event.getProjectionMatrix());
-        playersInPhoto.clear();
     }
 
     @SubscribeEvent
     public void onRenderGui(RenderGameOverlayEvent event) {
         //debug
         if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
-            if (debugScreenPosition != null) {
-                // スクリーン座標をgui座標に変換
-                float x = (float) debugScreenPosition.x / Minecraft.getInstance().getWindow().getScreenWidth() * Minecraft.getInstance().getWindow().getGuiScaledWidth();
-                float y = (float) (Minecraft.getInstance().getWindow().getScreenHeight() - debugScreenPosition.y) / Minecraft.getInstance().getWindow().getScreenHeight() * Minecraft.getInstance().getWindow().getGuiScaledHeight();
+            if (debugGuiPosition != null) {
+                float x = (float) debugGuiPosition.x;
+                float y = (float) debugGuiPosition.y;
 
                 // 点を描画
                 RenderSystem.disableTexture();
@@ -95,7 +104,7 @@ public class RenderEventListener {
                 Tessellator t = Tessellator.getInstance();
                 BufferBuilder builder = t.getBuilder();
                 builder.begin(GL_QUADS, DefaultVertexFormats.POSITION);
-                //builder.vertex(debugScreenPosition.x(), debugScreenPosition.y(), 0).color(255, 0, 0, 255).endVertex();
+                //builder.vertex(debugGuiPosition.x(), debugGuiPosition.y(), 0).color(255, 0, 0, 255).endVertex();
 
                 builder.vertex(x - 4f, y + 4f, -90.0D).endVertex();
                 builder.vertex(x + 4f, y + 4f, -90.0D).endVertex();

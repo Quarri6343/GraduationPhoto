@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static quarri6343.graduationphoto.Graduationphoto.FILM_SOUND;
+import static quarri6343.graduationphoto.Graduationphoto.*;
 
 public class ScreenShotRenderer extends Screen {
     private DynamicTexture texture;
@@ -52,7 +52,7 @@ public class ScreenShotRenderer extends Screen {
         NativeImage nativeImage = ScreenShotHelper.takeScreenshot(mc.getWindow().getWidth(), mc.getWindow().getHeight(), mc.getMainRenderTarget());
         
         texture = new DynamicTexture(cropImage(nativeImage,
-                (int) (mc.getWindow().getWidth() * 0.3), (int) (mc.getWindow().getHeight() * 0.2), (int) (mc.getWindow().getWidth() * 0.4), (int) (mc.getWindow().getHeight() * 0.6)));
+                (int) (mc.getWindow().getWidth() * photoX), (int) (mc.getWindow().getHeight() * photoY), (int) (mc.getWindow().getWidth() * photoWidth), (int) (mc.getWindow().getHeight() * photoHeight)));
         
         mc.player.playSound(FILM_SOUND, 1.0f, 1.0f);
     }

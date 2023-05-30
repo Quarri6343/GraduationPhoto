@@ -6,6 +6,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+import static quarri6343.graduationphoto.Graduationphoto.*;
+
 public class PhotoFrameRenderer {
     private final ResourceLocation imageLocation = new ResourceLocation("graduationphoto", "frame.png");
 
@@ -15,10 +17,10 @@ public class PhotoFrameRenderer {
         if(mc.screen != null)
             return;
         
-        int imageX = (int) (mc.getWindow().getGuiScaledWidth() * 0.3);
-        int imageY = (int) (mc.getWindow().getGuiScaledHeight() * 0.2);
-        int imageWidth = (int) (mc.getWindow().getGuiScaledWidth()  * 0.4);
-        int imageHeight = (int) (mc.getWindow().getGuiScaledHeight() * 0.6);
+        int imageX = (int) (mc.getWindow().getGuiScaledWidth() * photoX);
+        int imageY = (int) (mc.getWindow().getGuiScaledHeight() * photoY);
+        int imageWidth = (int) (mc.getWindow().getGuiScaledWidth()  * photoWidth);
+        int imageHeight = (int) (mc.getWindow().getGuiScaledHeight() * photoHeight);
         if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
             Minecraft.getInstance().getTextureManager().bind(imageLocation);
             AbstractGui.blit(event.getMatrixStack(), imageX, imageY, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
