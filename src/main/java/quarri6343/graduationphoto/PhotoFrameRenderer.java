@@ -14,7 +14,7 @@ public class PhotoFrameRenderer {
     @SubscribeEvent
     public void onRenderGameOverlay(RenderGameOverlayEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
-        if(mc.screen != null)
+        if(mc.screen != null && !(mc.screen instanceof net.minecraft.client.gui.screen.ChatScreen))
             return;
         
         int imageX = (int) (mc.getWindow().getGuiScaledWidth() * photoX);

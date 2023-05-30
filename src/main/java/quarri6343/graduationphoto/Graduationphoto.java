@@ -1,5 +1,6 @@
 package quarri6343.graduationphoto;
 
+import net.java.games.input.Mouse;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
@@ -66,6 +67,8 @@ public class Graduationphoto {
 
         MinecraftForge.EVENT_BUS.register(new PhotoFrameRenderer());
         MinecraftForge.EVENT_BUS.register(new RenderEventListener());
+        MinecraftForge.EVENT_BUS.register(new MouseHandler());
+        MinecraftForge.EVENT_BUS.register(new FlashScreenRenderer());
     }
 
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD

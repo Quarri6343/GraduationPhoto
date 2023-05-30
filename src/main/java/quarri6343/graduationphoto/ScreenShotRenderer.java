@@ -32,11 +32,6 @@ public class ScreenShotRenderer extends Screen {
     private DynamicTexture texture;
     private List<GameProfile> playersNotInPhoto = new ArrayList<>();
 
-    /**
-     * 0でflash開始、10でflash終了
-     */
-    public int flashScreen = 0;
-
     protected ScreenShotRenderer() {
         super(new TranslationTextComponent("タイトル"));
     }
@@ -55,6 +50,7 @@ public class ScreenShotRenderer extends Screen {
                 (int) (mc.getWindow().getWidth() * photoX), (int) (mc.getWindow().getHeight() * photoY), (int) (mc.getWindow().getWidth() * photoWidth), (int) (mc.getWindow().getHeight() * photoHeight)));
         
         mc.player.playSound(FILM_SOUND, 1.0f, 1.0f);
+        FlashScreenRenderer.flashScreen = 0;
     }
     
     public void listPlayerNotOnScreenshot(){
@@ -89,31 +85,6 @@ public class ScreenShotRenderer extends Screen {
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-
-        if (flashScreen < 10) {
-            RenderSystem.enableBlend();
-            // 点を描画
-            RenderSystem.disableTexture();
-            final int alpha = 1 - (flashScreen / 10);
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F - (float) flashScreen / 10f);
-
-            Tessellator t = Tessellator.getInstance();
-            BufferBuilder builder = t.getBuilder();
-            builder.begin(GL_QUADS, DefaultVertexFormats.POSITION);
-            //builder.vertex(debugScreenPosition.x(), debugScreenPosition.y(), 0).color(255, 0, 0, 255).endVertex();
-            
-            builder.vertex(0, Minecraft.getInstance().getWindow().getGuiScaledHeight(), -90.0D).endVertex();
-            builder.vertex(Minecraft.getInstance().getWindow().getGuiScaledWidth(), Minecraft.getInstance().getWindow().getGuiScaledHeight(), -90.0D).endVertex();
-            builder.vertex(Minecraft.getInstance().getWindow().getGuiScaledWidth(), 0, -90.0D).endVertex();
-            builder.vertex(0, 0, -90.0D).endVertex();
-
-            t.end();
-
-            RenderSystem.enableTexture();
-            RenderSystem.disableBlend();
-            flashScreen++;
-            return;
-        }
 
         int textureWidth = (int)(width * 0.4);
         int textureHeight = (int)(height * 0.6);
