@@ -29,6 +29,7 @@ import static quarri6343.graduationphoto.Graduationphoto.*;
 
 public class RenderEventListener {
     public static List<PlayerEntity> playersInPhoto = new ArrayList<>();
+    public static boolean isRendered = false;
 
     private Vector3 debugGuiPosition;
 
@@ -37,16 +38,11 @@ public class RenderEventListener {
     public static final IntBuffer VIEWPORT = GLAllocation.createByteBuffer(16 << 2).asIntBuffer();
 
     @SubscribeEvent
-    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        playersInPhoto.clear();
-    }
-
-    @SubscribeEvent
     public void onRenderPlayer(RenderPlayerEvent.Post event) {
         if (event.getPlayer() == Minecraft.getInstance().player || projectionMatrix == null) {
             return;
         }
-
+        
         Minecraft mc = Minecraft.getInstance();
         
         GL11.glGetIntegerv(GL11.GL_VIEWPORT, VIEWPORT);
@@ -77,44 +73,47 @@ public class RenderEventListener {
                         event.getPlayer().getEyePosition(1f), 
                         RayTraceContext.BlockMode.VISUAL, RayTraceContext.FluidMode.NONE, mc.player));
 
-        playersInPhoto.clear();
+        if(!isRendered)
+            RenderEventListener.playersInPhoto.clear();
         if (screenPosition.x >= imageX && screenPosition.x <= imageX + imageWidth
                 && screenPosition.y >= imageY && screenPosition.y <= imageY + imageHeight
                 && rayTraceResult.getType() == RayTraceResult.Type.MISS) {
             playersInPhoto.add(event.getPlayer());
         }
+        isRendered = true;
     }
 
     @SubscribeEvent
     public void onRenderWorld(RenderWorldLastEvent event) {
         projectionMatrix = new Matrix4(event.getProjectionMatrix());
+        isRendered = false;
     }
 
     @SubscribeEvent
     public void onRenderGui(RenderGameOverlayEvent event) {
         //debug
-        if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
-            if (debugGuiPosition != null) {
-                float x = (float) debugGuiPosition.x;
-                float y = (float) debugGuiPosition.y;
-
-                // 点を描画
-                RenderSystem.disableTexture();
-
-                Tessellator t = Tessellator.getInstance();
-                BufferBuilder builder = t.getBuilder();
-                builder.begin(GL_QUADS, DefaultVertexFormats.POSITION);
-                //builder.vertex(debugGuiPosition.x(), debugGuiPosition.y(), 0).color(255, 0, 0, 255).endVertex();
-
-                builder.vertex(x - 4f, y + 4f, -90.0D).endVertex();
-                builder.vertex(x + 4f, y + 4f, -90.0D).endVertex();
-                builder.vertex(x + 4f, y - 4f, -90.0D).endVertex();
-                builder.vertex(x - 4f, y - 4f, -90.0D).endVertex();
-
-                t.end();
-
-                RenderSystem.enableTexture();
-            }
-        }
+//        if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
+//            if (debugGuiPosition != null) {
+//                float x = (float) debugGuiPosition.x;
+//                float y = (float) debugGuiPosition.y;
+//
+//                // 点を描画
+//                RenderSystem.disableTexture();
+//
+//                Tessellator t = Tessellator.getInstance();
+//                BufferBuilder builder = t.getBuilder();
+//                builder.begin(GL_QUADS, DefaultVertexFormats.POSITION);
+//                //builder.vertex(debugGuiPosition.x(), debugGuiPosition.y(), 0).color(255, 0, 0, 255).endVertex();
+//
+//                builder.vertex(x - 4f, y + 4f, -90.0D).endVertex();
+//                builder.vertex(x + 4f, y + 4f, -90.0D).endVertex();
+//                builder.vertex(x + 4f, y - 4f, -90.0D).endVertex();
+//                builder.vertex(x - 4f, y - 4f, -90.0D).endVertex();
+//
+//                t.end();
+//
+//                RenderSystem.enableTexture();
+//            }
+//        }
     }
 }

@@ -17,7 +17,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.ScreenShotHelper;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -117,17 +116,20 @@ public class ScreenShotRenderer extends Screen {
         GL11.glTranslatef(width / 2,height / 2,0);
         GL11.glRotatef(15f, 0f, 0f, 1f);
         blit(matrixStack, - textureWidth / 2, - textureHeight / 2, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
-
-        for (int i = 0; i < playersNotInPhoto.size(); i++) {
-            Minecraft minecraft = Minecraft.getInstance();
-            Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = minecraft.getSkinManager().getInsecureSkinInformation(playersNotInPhoto.get(i));
-            ResourceLocation resourceLocation =  map.containsKey(MinecraftProfileTexture.Type.SKIN) ? minecraft.getSkinManager().registerTexture(map.get(MinecraftProfileTexture.Type.SKIN), MinecraftProfileTexture.Type.SKIN) : DefaultPlayerSkin.getDefaultSkin(PlayerEntity.createPlayerUUID(playersNotInPhoto.get(i)));
-            Minecraft.getInstance().getTextureManager().bind(resourceLocation);
-            blit(matrixStack, - textureWidth / 2 + i * 36, - textureHeight / 2,  32, 32, 8.0F, 8.0F, 8, 8, 64, 64);
-            RenderSystem.enableBlend();
-            blit(matrixStack, - textureWidth / 2 + i * 36, - textureHeight / 2,  32, 32, 40.0F, 8.0F, 8, 8, 64, 64);
-            RenderSystem.disableBlend();
-            //blit(MatrixStack matrixStack, int x, int y, float uOffset, float vOffset, int width, int height, int textureWidth, int textureHeight)
+        
+        if(playersNotInPhoto.size() > 0){
+            int headSize = Math.min(textureWidth / playersNotInPhoto.size(), 32);
+            for (int i = 0; i < playersNotInPhoto.size(); i++) {
+                Minecraft minecraft = Minecraft.getInstance();
+                Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = minecraft.getSkinManager().getInsecureSkinInformation(playersNotInPhoto.get(i));
+                ResourceLocation resourceLocation =  map.containsKey(MinecraftProfileTexture.Type.SKIN) ? minecraft.getSkinManager().registerTexture(map.get(MinecraftProfileTexture.Type.SKIN), MinecraftProfileTexture.Type.SKIN) : DefaultPlayerSkin.getDefaultSkin(PlayerEntity.createPlayerUUID(playersNotInPhoto.get(i)));
+                Minecraft.getInstance().getTextureManager().bind(resourceLocation);
+                blit(matrixStack, - textureWidth / 2 + i * (headSize + 4), - textureHeight / 2,  headSize, headSize, 8.0F, 8.0F, 8, 8, 64, 64);
+                RenderSystem.enableBlend();
+                blit(matrixStack, - textureWidth / 2 + i * (headSize + 4), - textureHeight / 2,  headSize, headSize, 40.0F, 8.0F, 8, 8, 64, 64);
+                RenderSystem.disableBlend();
+                //blit(MatrixStack matrixStack, int x, int y, float uOffset, float vOffset, int width, int height, int textureWidth, int textureHeight)
+            }
         }
         
         GL11.glPopMatrix();
