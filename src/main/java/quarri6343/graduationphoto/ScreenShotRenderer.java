@@ -36,6 +36,9 @@ public class ScreenShotRenderer extends Screen {
      */
     public int flashScreen = 0;
     
+    public static final int maxHeadSize = 32;
+    public static final int minHeadSize = 16;
+    
     private DynamicTexture texture;
     private List<GameProfile> playersNotInPhoto = new ArrayList<>();
 
@@ -117,16 +120,19 @@ public class ScreenShotRenderer extends Screen {
         GL11.glRotatef(15f, 0f, 0f, 1f);
         blit(matrixStack, - textureWidth / 2, - textureHeight / 2, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
         
-        if(playersNotInPhoto.size() > 0){
-            int headSize = Math.min(textureWidth / playersNotInPhoto.size(), 32);
+        if(playersNotInPhoto.size() > 0 && textureWidth > 0){
+            int headSize = Math.max(Math.min(textureWidth / playersNotInPhoto.size(), maxHeadSize) - 2, minHeadSize - 2);
             for (int i = 0; i < playersNotInPhoto.size(); i++) {
                 Minecraft minecraft = Minecraft.getInstance();
                 Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = minecraft.getSkinManager().getInsecureSkinInformation(playersNotInPhoto.get(i));
                 ResourceLocation resourceLocation =  map.containsKey(MinecraftProfileTexture.Type.SKIN) ? minecraft.getSkinManager().registerTexture(map.get(MinecraftProfileTexture.Type.SKIN), MinecraftProfileTexture.Type.SKIN) : DefaultPlayerSkin.getDefaultSkin(PlayerEntity.createPlayerUUID(playersNotInPhoto.get(i)));
                 Minecraft.getInstance().getTextureManager().bind(resourceLocation);
-                blit(matrixStack, - textureWidth / 2 + i * (headSize + 4), - textureHeight / 2,  headSize, headSize, 8.0F, 8.0F, 8, 8, 64, 64);
+                int column = (i * (headSize + 2)) / textureWidth;
+                int x = 2 - textureWidth / 2 + i * (headSize + 2) % textureWidth;
+                int y = 2 - textureHeight / 2 + column * (headSize + 2);
+                blit(matrixStack, x, y,  headSize, headSize, 8.0F, 8.0F, 8, 8, 64, 64);
                 RenderSystem.enableBlend();
-                blit(matrixStack, - textureWidth / 2 + i * (headSize + 4), - textureHeight / 2,  headSize, headSize, 40.0F, 8.0F, 8, 8, 64, 64);
+                blit(matrixStack, x, y,  headSize, headSize, 40.0F, 8.0F, 8, 8, 64, 64);
                 RenderSystem.disableBlend();
                 //blit(MatrixStack matrixStack, int x, int y, float uOffset, float vOffset, int width, int height, int textureWidth, int textureHeight)
             }
