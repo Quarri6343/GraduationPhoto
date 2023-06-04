@@ -12,7 +12,7 @@ import java.util.Random;
 public class KeyInputListener {
     private final Minecraft minecraft;
 
-    public static final KeyBinding openScreenKeyBind = new KeyBinding("写真を撮る", GLFW.GLFW_KEY_Q, "集合写真");
+    public static final KeyBinding openScreenKeyBind = new KeyBinding("写真を撮る", GLFW.GLFW_KEY_Z, "集合写真");
     public static final KeyBinding disableFlashKeyBind = new KeyBinding("フラッシュの有効を切り替え", GLFW.GLFW_KEY_M, "集合写真");
 
     public static final KeyBinding randomFrameKeyBind = new KeyBinding("枠の場所と大きさをランダムにする", GLFW.GLFW_KEY_R, "集合写真");
